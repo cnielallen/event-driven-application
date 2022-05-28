@@ -1,0 +1,18 @@
+databaseChangelog:
+  - changeSet:
+      id: assign-privileges
+      author: cnielallen
+      runAlways: true
+      runOnChange: true
+      runOrder: "last"
+      failOnError: false
+      modifySql:
+        - replace:
+            replace: ${DATABASE_READ_WRITE_USER_ROLE}
+            with: ${readWriteUserRole}
+        - replace:
+            replace: ${DATABASE_READ_ONLY_USER_ROLE}
+            with: ${readOnlyUserRole}
+      changes:
+        - sqlFile:
+            path: "db/sql/assign-privileges.sql"

@@ -1,10 +1,10 @@
-package com.cnielallen.eventdrivenapplcation;
+package com.cnielallen.eventdriven;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EventDrivenApplcationApplicationTests {
+class EventDrivenApplicationTests {
 
 	@Test
 	void contextLoads() {

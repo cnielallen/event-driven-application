@@ -1,13 +1,13 @@
-package com.cnielallen.eventdrivenapplcation;
+package com.cnielallen.eventdriven;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EventDrivenApplcationApplication {
+public class EventDrivenApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EventDrivenApplcationApplication.class, args);
+		SpringApplication.run(EventDrivenApplication.class, args);
 	}
 
 }

@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: event-driven-application
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: ${EVENT_DRIVEN_APPLICATION_PROFILES:}
+  cloud:
+    stream:
+      default:
+        consumer:
+          default-retryable: false
+          back-off-max-interval: 60000
+          max-attempts: 3
+          retryable-exceptions:
+            com.cnielallen.eventdriven.exceptio.RetryableException: true
+      bindings:
+        publishJournalDataToDownstreamTopic-out-0:
+          destination: ${EVENT_DRIVEN_JOURNAL_TOPIC}
+          binder: solace
+        processJournal-in-0:
+          destination: ${EVENT_DRIVEN_JOURNAL_SUBSCRIBE_QUEUE}
+          group: ${EVENT_DRIVEN_JOURNAL_SUBSCRIBE_GROUP}
+          binder: solace
+      solace:
+        bindings:
+          processJournal-in-0:
+            consumer:
+              provision-durable-queue: false
+              provision-subscriptions-to-durable-queue: false
+              provision-dmq: false
+              autoBindDmq: true
+      function:
+        definition: processJournal
+      source: publishJournalDataToDownstreamTopic
+
+  datasource:
+    url: ${EVENT_DRIVEN_DB_JDBC_URL}
+    username: ${EVENT_DRIVEN_DB_USERNAME}
+    password: ${EVENT_DRIVEN_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+    user: ${EVENT_DRIVEN_DB_MIGRATION_USERNAME}
+    password: ${EVENT_DRIVEN_DB_MIGRATION_PASSWORD}
+    parameters:
+      readWriteUserRole: ${EVENT_DRIVEN_DB_READ_WRITE_USER_ROLE}
+      readOnlyUserRole: ${EVENT_DRIVEN_DB_READ_ONLY_USER_ROLE}
+  zipkin:
+    base-url: ${ZIPKIN_URL:}
+    enabled: ${ZIPKIN_ENABLED:false}
+    service:
+      name: event-driven
+
+solace:
+  java:
+    host: ${SOLACE_HOST_URL}
+    msg-vpn: ${SOLACE_MSG_VPN}
+    client-username: ${EVENT_DRIVEN_SOLACE_USERNAME}
+    client-password: ${EVENT_DRIVEN_SOLACE_PASSWORD}
+    api-properties:
+      ssl_trust_store: ${JAVA_HOME}/lib/security/cacerts
+
+management:
+  health:
+    readinessstate:
+      enabled: true
+    livesnessstate:
+      enabled: true
+    endpoint:
+      health:
+        show-details: always
+        probes:
+          enabled: true
+server:
+  shutdown: graceful
+
